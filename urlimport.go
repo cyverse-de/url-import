@@ -48,7 +48,7 @@ func main() {
 	switch strings.ToLower(scheme) {
 	case "http", "https":
 		exitcode = DownloadFromURL()
-	case "ftp", "sftp":
+	case "ftp":
 		exitcode = DownloadFromFtp(host, port, user, pass, path)
 	default:
 		logMessage("Invalid Scheme.")
@@ -58,7 +58,7 @@ func main() {
 	defer os.Exit(exitcode)
 }
 
-//cleanup clean up o byte log file or partially downloaded output file
+//cleanup clean up 0 byte log file or partially downloaded output file
 func cleanup() {
 	// if error file is 0 bytes, then remove it
 	if fi, err := os.Stat(logfileName); !os.IsNotExist(err) {
@@ -73,6 +73,7 @@ func cleanup() {
 //logMessage to a log file
 func logMessage(message string) {
 	log.WriteString(message)
+	log.WriteString("\n")
 }
 
 //parseArgs parse command line args
@@ -122,26 +123,8 @@ func ParseURL() (string, string, string, string, string, string, int) {
 	return u.Scheme, host, port, username, password, u.Path, 0
 }
 
-//DownloadFromURL downloads file from give url
+//DownloadFromURL downloads file from given http(s) url
 func DownloadFromURL() int {
-	response, err := http.Head(downloadURL)
-	if err != nil {
-		logMessage("Unable to complete HEAD request. " + err.Error())
-		return 1
-	}
-	defer response.Body.Close()
-
-	fmt.Println(response.StatusCode)
-	if response.StatusCode < 200 || response.StatusCode > 299 {
-		logMessage("HEAD request:" + response.Status)
-		return 1
-	}
-
-	return downloadFile()
-}
-
-//downloadFile download the file from given http url
-func downloadFile() int {
 	output, err := os.Create(filename)
 	if err != nil {
 		logMessage("Unable to create output file. " + err.Error())
@@ -154,6 +137,12 @@ func downloadFile() int {
 		return 1
 	}
 	defer response.Body.Close()
+
+	if response.StatusCode < 200 || response.StatusCode > 299 {
+		logMessage("Request failed. Status code:" + response.Status)
+		return 1
+	}
+
 	n, err := io.Copy(output, response.Body)
 	if err != nil {
 		logMessage("Unable to copy contents. " + err.Error())
@@ -163,7 +152,7 @@ func downloadFile() int {
 	return 0
 }
 
-//DownloadFromFtp download a file from a given url, port, user, pass and path
+//DownloadFromFtp download a file from a given ftp url, port, user, pass and path
 func DownloadFromFtp(host string, port string, user string, pass string, path string) int {
 	fmt.Println(host, port, user, pass, path)
 	s := []string{host, port}
