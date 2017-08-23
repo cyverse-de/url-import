@@ -43,6 +43,8 @@ func TestDownloadFromURL(t *testing.T) {
 
 	if _, err := os.Stat("test_file.txt"); os.IsNotExist(err) {
 		t.Errorf("File not downloaded!")
+	} else {
+		os.Remove(filename) //cleanup
 	}
 
 }
@@ -57,6 +59,8 @@ func TestDownloadFromFtp(t *testing.T) {
 
 	if _, err := os.Stat("readme.txt"); os.IsNotExist(err) {
 		t.Errorf("File not downloaded!")
+	} else {
+		os.Remove(filename) //cleanup
 	}
 
 }

@@ -22,10 +22,11 @@ const (
 	defaultPort = "21"
 	defaultUser = "anonymous"
 	defaultPass = "anonymous"
+	logfileExtn = "-url-import-error.txt"
 )
 
 func main() {
-	logfileName = strings.Join(strings.Split(time.Now().Format(time.UnixDate), " "), "-") + "-url-import-error.txt"
+	logfileName = strings.Join(strings.Split(time.Now().Format(time.UnixDate), " "), "-") + logfileExtn
 	file, err := os.Create(logfileName)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to create error file. ", err)
@@ -57,13 +58,14 @@ func main() {
 	defer os.Exit(exitcode)
 }
 
+//cleanup clean up o byte log file or partially downloaded output file
 func cleanup() {
 	// if error file is 0 bytes, then remove it
 	if fi, err := os.Stat(logfileName); !os.IsNotExist(err) {
-		if fi.Size() == 0 {
+		if fi.Size() == 0 { // no errors logged
 			os.Remove(logfileName)
 		} else {
-			os.Remove(filename)
+			os.Remove(filename) //there were some errors logged. Remove partial downloaded file.
 		}
 	}
 }
