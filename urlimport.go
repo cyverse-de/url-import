@@ -1,22 +1,22 @@
 package main
 
-import "fmt"
-import "flag"
-import "net/http"
-import "os"
-import "io"
-import "io/ioutil"
-import "net/url"
-import "strings"
-import "time"
-import "net"
+import (
+	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"time"
 
-import "github.com/jlaffaye/ftp"
+	"github.com/jlaffaye/ftp"
+)
 
-var filename string
-var downloadURL string
+var filename, downloadURL, logfileName string
 var log *os.File
-var logfileName string
 
 const (
 	defaultPort = "21"
@@ -81,8 +81,6 @@ func parseArgs() int {
 	flag.StringVar(&filename, "filename", "", "file name to use when saving the imported file")
 	flag.StringVar(&downloadURL, "url", "", "Url to import the file from")
 	flag.Parse()
-	fmt.Println(filename)
-	fmt.Println(downloadURL)
 	if len(filename) == 0 || len(downloadURL) == 0 {
 		flag.PrintDefaults()
 		logMessage("Invalid command line arguments!")
