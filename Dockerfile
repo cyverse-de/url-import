@@ -15,4 +15,4 @@ LABEL org.label-schema.vcs-ref="$git_commit"
 LABEL org.label-schema.vcs-url="https://github.com/cyverse-de/url-import"
 LABEL org.label-schema.version="$descriptive_version"
 
-ENTRYPOINT ["/go/src/github.com/cyverse-de/url-import/urlimport"]
+ENTRYPOINT ["url-import"]
