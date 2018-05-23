@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -169,6 +168,13 @@ func DownloadFromFtp(host string, port string, user string, pass string, path st
 		return 1
 	}
 
+	fileSize, err := conn.FileSize(path)
+	if err != nil {
+		fmt.Println("Couldn't retrieve file size from FTP server, continuing anyway")
+	} else {
+		fmt.Printf("File size: %d\n", fileSize)
+	}
+
 	response, err := conn.Retr(path)
 	if err != nil {
 		logMessage("Unable to retrieve file from FTP server. " + err.Error())
@@ -183,13 +189,7 @@ func DownloadFromFtp(host string, port string, user string, pass string, path st
 	}
 	defer output.Close()
 
-	buf, err := ioutil.ReadAll(response)
-	if err != nil {
-		logMessage("Unable to read contents. " + err.Error())
-		return 1
-	}
-
-	n, err := output.Write(buf)
+	n, err := io.Copy(output, response)
 	if err != nil {
 		logMessage("Unable to copy contents. " + err.Error())
 		return 1
