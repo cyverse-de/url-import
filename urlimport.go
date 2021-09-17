@@ -71,8 +71,8 @@ func cleanup() {
 
 //logMessage to a log file
 func logMessage(message string) {
-	log.WriteString(message)
-	log.WriteString("\n")
+	log.WriteString(message) // nolint:errcheck
+	log.WriteString("\n")    // nolint:errcheck
 }
 
 //parseArgs parse command line args
@@ -160,7 +160,7 @@ func DownloadFromFtp(host string, port string, user string, pass string, path st
 		logMessage("Unable to connect to ftp server. " + err.Error())
 		return 1
 	}
-	defer conn.Quit()
+	defer conn.Quit() // nolint:errcheck
 
 	err = conn.Login(user, pass)
 	if err != nil {
