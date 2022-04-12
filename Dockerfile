@@ -13,12 +13,9 @@ LABEL org.label-schema.version="$descriptive_version"
 
 ENV CGO_ENABLED=0
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
 RUN go install github.com/jstemmer/go-junit-report@latest
 
 COPY . .
-
 RUN go install -v ./...
 
 ENTRYPOINT ["url-import"]
