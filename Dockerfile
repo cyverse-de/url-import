@@ -13,6 +13,4 @@ COPY . .
 
 RUN go install -v ./...
 
-RUN mv ./url-import /usr/local/bin/url-import 
-
 ENTRYPOINT ["url-import"]
