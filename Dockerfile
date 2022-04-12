@@ -1,21 +1,18 @@
-FROM golang:1.16-alpine
+FROM golang:1.18
 
-RUN apk add --no-cache git
-RUN go get -u github.com/jstemmer/go-junit-report
+WORKDIR /build
 
-ARG git_commit=unknown
-ARG descriptive_version=unknown
-
-LABEL org.cyverse.git-ref="$git_commit"
-LABEL org.cyverse.descriptive-version="$descriptive_version"
-
-COPY . /go/src/github.com/cyverse-de/url-import
-WORKDIR /go/src/github.com/cyverse-de/url-import
 ENV CGO_ENABLED=0
-RUN go install -v -ldflags="-X main.gitref=$git_commit" github.com/cyverse-de/url-import
+ENV GOOS=linux
+ENV GOARCH=amd64
 
-LABEL org.label-schema.vcs-ref="$git_commit"
-LABEL org.label-schema.vcs-url="https://github.com/cyverse-de/url-import"
-LABEL org.label-schema.version="$descriptive_version"
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+COPY . .
+
+RUN go install -v ./...
+
+RUN mv ./url-import /usr/local/bin/url-import 
 
 ENTRYPOINT ["url-import"]
