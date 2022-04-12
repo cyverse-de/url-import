@@ -12,12 +12,10 @@ LABEL org.label-schema.vcs-url="https://github.com/cyverse-de/url-import"
 LABEL org.label-schema.version="$descriptive_version"
 
 ENV CGO_ENABLED=0
-ENV GOOS=linux
-ENV GOARCH=amd64
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
-RUN go get -u github.com/jstemmer/go-junit-report
+RUN go install github.com/jstemmer/go-junit-report@latest
 
 COPY . .
 
