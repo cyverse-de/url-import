@@ -9,7 +9,7 @@ node('docker') {
             def dockerImage
 	    stage('Build') {
                 milestone 50
-                dockerImage = docker.build("harbor.cyverse.org/de/url-import:${env.BUILD_TAG}", "--build-arg git_commit=${commitHash} --build-arg descriptive_version=${descriptiveVersion}")
+                dockerImage = docker.build("harbor.cyverse.org/de/url-import:${env.BUILD_TAG}", "--build-arg git_commit=${commitHash} --build-arg descriptive_version=${descriptiveVersion} .")
                 milestone 51
                 dockerImage.push()
             }
