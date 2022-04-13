@@ -4,7 +4,7 @@ node('docker') {
     try {
         slackJobDescription = "job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
         def commitHash = checkout(scm).GIT_COMMIT
-        def descriptive_version = sh(returnStdout: true, script: 'git describe --long --tags --dirty --always').trim()
+        def descriptiveVersion = sh(returnStdout: true, script: 'git describe --long --tags --dirty --always').trim()
         docker.withRegistry('https://harbor.cyverse.org', 'jenkins-harbor-credentials') {
             def dockerImage
 	    stage('Build') {
